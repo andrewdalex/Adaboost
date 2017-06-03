@@ -14,21 +14,19 @@ classifier = obj.classifier;
 %stability parameter
 eps_sta = .01;
 
-[N, D] = size(data);
+[N, ~] = size(data);
 weights = ones(N,1) ./ N;
 alphas = zeros(num_iters, 1);
 weak_classifiers = {1:num_iters};
 for m = 1:num_iters
     
-    %weird mod index because we want 1,2,...D,1,2... etc
-    curr_attr = data(:, mod(m-1, D)+1);
-    [y_m, J] = classifier(curr_attr, weights,labels);
+    [y_m, J] = classifier(data, weights, labels, m);
     eps_m = J / sum(weights);
     alphas(m) = log((1-eps_m + eps_sta)/(eps_m + eps_sta));
     weak_classifiers{m} = y_m;
     
     %heavily weight incorrectly classified data
-    weights = weights .* exp(alphas(m) * (y_m(curr_attr)' == labels));
+    weights = weights .* exp(alphas(m) * (y_m(data)' == labels));
 end
 
 %want alphas to sum to one
