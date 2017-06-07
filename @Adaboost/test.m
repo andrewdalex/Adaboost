@@ -1,4 +1,4 @@
-function [ error_pct] = test(obj, test_data, test_labels)
+function [ error_pct,  ] = test(obj, test_data, test_labels)
 %test Evaluate the accuracy of the trained model
 %INPUT
 %   test_data: NxD data for testing (N samples, D dimensions)
@@ -14,14 +14,10 @@ if length(test_labels) ~= N
     error('Size of test_labels does not match test_data');
 end
 
-preds = zeros(1,N);
-wcs = obj.weak_classifiers;
-alphas = obj.alphas;
-for i=1:obj.num_classifiers
-    preds = preds + alphas(i) * wcs{i}(test_data);
-end
+preds = obj.classify(test_data);
 
-error_pct = (sum((preds < .5) == test_labels') / N) * 100;
+
+error_pct = (sum(preds ~= test_labels) / N) * 100;
 
 
 end
