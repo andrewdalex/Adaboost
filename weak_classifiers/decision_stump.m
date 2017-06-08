@@ -33,7 +33,7 @@ max_iter = 10000;
 min_error = Inf;
 curr_boundary = min(curr_attr);
 step_size = (max(curr_attr) - min(curr_attr)) / max_iter;
-while curr_boundary < max(curr_attr)
+while curr_boundary <= max(curr_attr)
     err = sum(weights(curr_attr < curr_boundary & labels==right));
     err = err + sum(weights(curr_boundary <= curr_attr & labels==left));
     if err < min_error
@@ -45,6 +45,6 @@ end
 a = [right, left];
 
 %classifier takes entire data but extracts appropriate attribute
-classifier = @(x) a((x(:, col_id) < opt_boundary) + 1);
+classifier = @(x) a((x(:, col_id) < opt_boundary) + 1)';
 J = min_error;
 end

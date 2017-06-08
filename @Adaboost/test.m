@@ -1,4 +1,4 @@
-function [ error_pct,  ] = test(obj, test_data, test_labels)
+function [ error_pct] = test(obj, test_data, test_labels)
 %test Evaluate the accuracy of the trained model
 %INPUT
 %   test_data: NxD data for testing (N samples, D dimensions)

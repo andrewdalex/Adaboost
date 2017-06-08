@@ -12,7 +12,7 @@ score = zeros(obj.num_classes, N);
 wcs = obj.weak_classifiers;
 for i = 1:obj.num_classes
     for j = 1:obj.num_classifiers
-        score(i,:) = score(i,:) + obj.alphas(i,j)*wcs{i,j}(data);
+        score(i,:) = score(i,:) + (obj.alphas(i,j)*wcs{i,j}(data))';
     end
 end
 [~, pred_labels] = max(score);
