@@ -64,8 +64,13 @@ DESIGN
 		2. Ouputs 
 			-the gradient of the error function at a given set of coefficients W 
 				- (D+1)x1 vector 
+				-Multiply this by the weights from adaboost to account for weighted 
+					data 
 				
 		3. Design 
+			a. Calculate predicted values Y = Sigmoid(design_matrix * W)
+			b. Gradient_Error = sum(above value * design(row,:))
+				-Phi(Xn) is active if the point misclassified, 0 else 
 			implements formula (2)
 			
 	C. Sigmoid 
@@ -86,6 +91,9 @@ DESIGN
 				
 			b. data 
 				-used in each iteration of evaluating Gradient_Error
+				
+			c. Weights 
+				-weights from adaboost for data points 
 				
 			c. labels 
 				

@@ -1,4 +1,4 @@
-function [ W ] = Calculate_Weights( data, labels, W0 )
+function [ W ] = Calculate_Weights( data, labels, W0, weights )
 %{
     Implements a function to calculate the weights for a given logistic
     regression 
@@ -16,6 +16,9 @@ function [ W ] = Calculate_Weights( data, labels, W0 )
 		c. labels 
             -Nx1 vector of corresponding data labels 
 
+        d.weights 
+            -weights from adaboost for the Grad Error function 
+
     Outputs 
         a. W 
             -final weights 
@@ -25,14 +28,15 @@ function [ W ] = Calculate_Weights( data, labels, W0 )
 
 %}
 
-step_size = 1/100;
-max_iters = 100000;
+step_size = 2;
+max_iters = 100;
 
 W = W0;
 design_matrix = Polynomial_Basis(data);
 for i=1:max_iters 
-    %W
-    W = W - step_size .* (Gradient_Error(design_matrix, labels, W))';
+    
+   % Gradient_Error(design_matrix, labels, W, weights)
+    W = W - step_size .* (Gradient_Error(design_matrix, labels, W, weights));
     %%gradErr = Gradient_Error(design_matrix, labels, W)
     %update = step_size .* gradErr
     %W = W-update';

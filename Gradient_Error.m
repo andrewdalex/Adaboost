@@ -1,4 +1,4 @@
-function [ Err ] = Gradient_Error( design_matrix, labels, W )
+function [ Err ] = Gradient_Error( design_matrix, labels, W, weights)
 %{
     Implementation of Error of our Gradient function 
 
@@ -14,6 +14,10 @@ function [ Err ] = Gradient_Error( design_matrix, labels, W )
 			c. W 
 				-needed for calculating Yn each iteration 
                 -(D+1)x1
+
+            d. weights 
+                -of each point from the Adaboost. Multiply each point by
+                its weight in the calculation of error 
 				
 		2. Ouputs 
 			-the gradient of the error function at a given set of coefficients W 
@@ -30,17 +34,29 @@ function [ Err ] = Gradient_Error( design_matrix, labels, W )
 [rows, ~] = size(design_matrix);
 Y=zeros(rows,1);
 
-%W
+
+
+%Calculating predicted Y
 for i=1:rows
    % design_matrix(i,:)
    % W
+  % design_matrix(i,:);
+   %W
     Y(i) = Sigmoid(design_matrix(i,:) * W);
     
 end 
 
-Err = (Y-labels) .* design_matrix;
+misclassified = Y - labels;
+weightedMisclassified = misclassified .* weights;
 
-Err = sum(Err);
+[wrows,~] = size(W);
+Err = zeros(wrows, 1);
+
+for i=1:rows
+    
+    Err = Err + (weightedMisclassified(i) * design_matrix(i,:))';    
+end 
+
 
 
 
