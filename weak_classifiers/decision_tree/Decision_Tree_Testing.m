@@ -1,5 +1,17 @@
 csvread('Train1.txt')
 X = csvread('Train1.txt');
+Train1 = csvread('train1.data');
+Train2 = csvread('train2.data');
+Train3 = csvread('train3.data');
+
+Test1 = csvread('test1.data');
+Test2 = csvread('test2.data');
+Test3 = csvread('test3.data');
+
+
+
+
+
 DataSortedClass = sortrows(X, 5);
 
 D1 = zeros(37,5);
@@ -197,62 +209,98 @@ root = ID3(Test, weights, Labels, attributes);
     Testing root_classify 
         -creating tree off first 100 points 
         -testing next 10: 101-120
-
+        C2 vs ! C2
     Results: correctly classified 14/20 test points 
 %}
-Test=X(1:100,:);
-Labels = X(1:100,5);
-for i=1:100
-    if(Labels(i,:) == 2)
-        Labels(i,:) =1;
-    else 
-        Labels(i,:) = 0;
-    end     
-end 
-weights(1:100) = 1/100;
+
+Labels2 = Data2(:,5) ==2;
+Data2(:,5) = [];
+
+Weights(1:120,1) = 1/120;
 attributes = [1;2;3;4];
 
-root = ID3(Test, weights, Labels, attributes);
+rootID3 = ID3(Data2, Weights, Labels2, attributes);
+Test2temp = Test1(:,1:4);
 
-output = root_classify(temp, root);
+Predicted2 = root_classify(Test2temp, rootID3);
 
-testLabels = X(101:120,5);
-for i=1:20
-    if(testLabels(i,:) == 2)
-        testLabels(i,:) =1;
-    else 
-        testLabels(i,:) = 0;
-    end     
-end 
 
-error =0;
-for i=1:20
-    if(~(testLabels(i,:) == output(i,:)))
-        error = error +1;
-    end 
-    
-end 
 
 
 
 %{
-    Testing implementation of Decision_Tree function 
+    Following Test: 2 misclassifications
 
 %}
-Test=X(1:100,:);
-Labels = X(1:100,5);
-for i=1:100
-    if(Labels(i,:) == 2)
-        Labels(i,:) =1;
-    else 
-        Labels(i,:) = 0;
-    end     
-end 
-weights(1:100) = 1/100;
 attributes = [1;2;3;4];
+Test = Data3;
+Test(:,5) = [];
+Labels = Data3(:,5)==3;
+weights(1:120,1) = 1/120;
 rootID3 = ID3(Test, weights, Labels, attributes);
 
-[funct,root, error] = Decision_Tree(Test, weights, Labels, 2);
-temp = X(101:110,:);
-Output = funct(temp);
-error
+testing1 = Test1(:,1:4);
+labels1 = Test1(:,5)==3;
+
+Predicted = root_classify(testing1, rootID3);
+
+%{
+
+    ab= Adaboost(@Decision_Tree)
+
+    ab.train(data,labels, num-of-classifiers)
+
+    error = ab.test(test_data, test_labels)
+%} 
+
+
+
+Test = Data3;
+Test(:,5) = [];
+Labels = Data3(:,5);
+
+
+ab = Adaboost(@Decision_Tree);
+ab.train(Test, Labels, 6);
+
+testing1 = Test1(:,1:4);
+labels1 = Test1(:,5);
+error1 = ab.test(testing1, labels1);
+Predicted1 = ab.classify(testing1);
+
+
+%{
+    Second Data Set Test
+        -Note: tested on 1st 3 data sets, data set 2 gave least error so
+        using that 
+%}
+
+training2 = Train2(:,1:4);
+labels2 = Train2(:,5);
+testing2 = Test2(:,1:4);
+testlabels2 = Test2(:,5);
+
+ab = Adaboost(@Decision_Tree);
+ab.train(training2, labels2, 2);
+error1 = ab.test(testing2, testlabels2);
+Predicted1 = ab.classify(testing2);
+
+error = zeros(10,1);
+for i=1:10
+    ab= Adaboost(@Decision_Tree);
+    ab.train(training2, labels2, i);
+    error(i) = ab.test(testing2, testlabels2);   
+    i
+end 
+
+figure 
+hold on
+scatter(linspace(1,10,10), error);
+title('Graph of Error as function of Number of Weak Learners');
+xlabel('Num. Weak Learners');
+ylabel('%Error');
+
+
+
+
+

@@ -18,11 +18,10 @@ attributes=[1;2;3;4];
 root = ID3(data, weights, labels,attributes);
 
 predicted = root_classify(data, root);
-
 error= (~(predicted==labels))' * weights;
-
+%error
 classify = @(x) root_classify(x,root);
-
+%'done'
 %d_tree = struct(f1,classify,f2,root);
 
 

@@ -31,7 +31,8 @@ weights2 = zeros(DataRows, 1);
 %data
 %weights
 %labels
-[classifier, ~] = decision_stump(data(:,attr), weights, labels);
+%Pas 1 into stump b/c of how Andy wrote it 
+[classifier, ~] = decision_stump(data(:,attr), weights, labels, 1);
 l1Iterator=1;
 l2Iterator=1;
 w1It=1;
@@ -40,15 +41,15 @@ for i=1:DataRows
    %classifier(data(i))
     if(classifier(data(i,attr))==1)
         Sv1(l1Iterator,:)=data(i,:);
-        LabelsSv1(l1Iterator,:) = labels(i,:);
+        LabelsSv1(l1Iterator) = labels(i);
         l1Iterator=l1Iterator+1;
-        weights1(w1It,:) = weights(i,:);
+        weights1(w1It) = weights(i);
         w1It = w1It + 1;
     else
         Sv2(l2Iterator,:)=data(i,:);
-        LabelsSv2(l2Iterator,:)=labels(i,:);
+        LabelsSv2(l2Iterator)=labels(i);
         l2Iterator=l2Iterator+1;
-         weights2(w2It,:) = weights(i,:);
+         weights2(w2It) = weights(i);
         w2It = w2It + 1;
     end     
 end 

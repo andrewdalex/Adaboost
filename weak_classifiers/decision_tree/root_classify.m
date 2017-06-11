@@ -13,20 +13,28 @@ function [ class ] = root_classify( testPoint, root )
 
 %}
 
-classified = 0;
 [rows, ~] = size(testPoint);
 class = zeros(rows,1);
-
+%rows
 for i=1:rows
     node = root;
+    classified = 0;
     while(classified ==0)
         %base case - check if at a leaf 
-        if(~(isstruct(node.left) && isstruct(node.right)))
-            class(i,:) = node.classification;
+        if((~(isstruct(node.left) && isstruct(node.right)))&& node.classification ~=10)
+           % node.classification
+            class(i) = node.classification;
             classified =1;
+            
         else 
-            root.d_stump(testPoint)
-            if(root.d_stump(testPoint) ==1)
+          %  node.attribute
+          % testPoint(i,node.attribute)
+           %node.classification
+          % node.d_stump
+          % node.d_stump(3)
+           %node.d_stump(testPoint(i,node.attribute))
+         
+            if(node.d_stump(testPoint(i,node.attribute)) ==0)
                 node=node.right;            
             else 
                 node = node.left;
@@ -35,6 +43,7 @@ for i=1:rows
     end 
 end     
         
+
         
 end 
     

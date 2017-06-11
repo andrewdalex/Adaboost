@@ -41,10 +41,12 @@ f1 = 'd_stump';
 f2='left';
 f3='right';
 f4='classification';
+f5='attribute';
 
 d_stump = 0;
 left =0;
 right =0;
+attribute = 0;
 classification =10;
 
 
@@ -57,7 +59,7 @@ testZeros = zeros(labelsSz,1);
 
 if (isequal(labels,testOnes))
     classification = 1;
-    Node = struct(f1,d_stump,f2, left, f3, right, f4,classification);
+    Node = struct(f1,d_stump,f2, left, f3, right, f4,classification, f5, attribute);
  %%   Sv1 =[];
  %   LabelsSv1 = [];
  %   weights1=[];
@@ -68,7 +70,7 @@ if (isequal(labels,testOnes))
 
 elseif(isequal(labels,testZeros))
     classification = 0;
-    Node = struct(f1,d_stump,f2, left, f3, right, f4,classification);
+    Node = struct(f1,d_stump,f2, left, f3, right, f4,classification, f5, attribute);
   %  Sv1 =[];
   %  LabelsSv1 = [];
   %  weights1=[];
@@ -98,11 +100,12 @@ else
        
       if (isempty(attributes))
         classification = randClassification; 
-        Node = struct(f1, d_stump, f2, left, f3, right, f4, classification);
+        Node = struct(f1, d_stump, f2, left, f3, right, f4, classification,...
+                f5, attribute);
       else
         [attrSize, ~] = size(attributes);
         gainMax=0;
-        attr = 0;
+        %attr = 0;
         Sv1=[];
         Sv2=[];
         LabelsSv1=[];
@@ -132,9 +135,12 @@ else
                   % tempGain
                   % gainMax 
                    
-             if(tempGain > gainMax)
+                  
+                  
+             if(tempGain >= gainMax)
+                 attributeIndex = i;
                  gainMax = tempGain;
-                 attr = i;
+                 %attr = i;
                  Sv1 = tempSv1;
                  Sv2 = tempSv2; 
                  LabelsSv1 = tempLabelsSv1;
@@ -144,32 +150,38 @@ else
                  d_stump = classifierT;
              end 
         end 
-        
-        
+        %Error caused by Gain function not returning anything 
+        %   In this case, choose element at random from within attributes
+           if(attributeIndex ==0)
+                attributeIndex = 1;
+                
+           end 
+           % attributes 
+            attribute = attributes(attributeIndex);
+            attrUpdated = attributes;
+            attrUpdated(attributeIndex) = [];
+            %attrUpdated
        
             if(isempty(Sv1)==1)
-                left = struct(f1, d_stump, f2, left, f3, right, f4, randClassification);
+                left = struct(f1, d_stump, f2, left, f3, right, f4, ...
+                        randClassification, f5, attribute);
             else 
                % Sv1
                % weights1
                % LabelsSv1
                % attrUpdated
-               attrUpdated = attributes(:,:);     
-                  attrUpdated(attr,:) = [];   
-                  
-               left = ID3(Sv1, weights1, LabelsSv1, attrUpdated);
+              left = ID3(Sv1, weights1, LabelsSv1, attrUpdated);
             end 
             
             if(isempty(Sv2)==1)
-                right = struct(f1, d_stump, f2, left, f3, right, f4, randClassification);
-            else 
-                attrUpdated = attributes(:,:);     
-                 attrUpdated(attr,:) = []; 
-                 
+                right = struct(f1, d_stump, f2, left, f3, right, f4, ...
+                       randClassification, f5, attribute);
+            else                  
                 right = ID3(Sv2, weights2, LabelsSv2, attrUpdated);
             end 
 
-            Node = struct(f1, d_stump, f2, left, f3, right, f4, classification);
+            Node = struct(f1, d_stump, f2, left, f3, right, f4, ...
+                    classification, f5, attribute);
 
        end  
 
