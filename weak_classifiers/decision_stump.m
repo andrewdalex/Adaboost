@@ -45,6 +45,6 @@ end
 a = [right, left];
 
 %classifier takes entire data but extracts appropriate attribute
-classifier = @(x) a((x(:, col_id) < opt_boundary) + 1);
+classifier = @(x) a((x(:, col_id) < opt_boundary) + 1)';
 J = min_error;
 end

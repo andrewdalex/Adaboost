@@ -24,7 +24,7 @@ for m = 1:num_iters
     obj.weak_classifiers{class_num, m} = y_m;
     
     %heavily weight incorrectly classified data
-    weights = weights .* exp(obj.alphas(m) * (y_m(data)' ~= labels));
+    weights = weights .* exp(obj.alphas(m) * (y_m(data) ~= labels));
 end
 
 %want alphas to sum to one
